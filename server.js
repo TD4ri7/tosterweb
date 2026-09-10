@@ -1,17 +1,21 @@
 const express = require("express");
-const admin = require("firebase-admin");
+const { initializeApp, cert, getApps } = require("firebase-admin/app");
+const { getFirestore } = require("firebase-admin/firestore");
 
 const app = express();
 
 const PORT = process.env.PORT || 3000;
 
+// Firebase
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+if (!getApps().length) {
+  initializeApp({
+    credential: cert(serviceAccount)
+  });
+}
 
-const db = admin.firestore();
+const db = getFirestore();
 
 app.get("/", (req, res) => {
   res.send("Max Chat is running!");
